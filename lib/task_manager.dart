@@ -124,28 +124,28 @@ class TaskManager with WidgetsBindingObserver {
     });
   }
 
-  _lowBatteryMonitor() {
+  _lowBatteryMonitor() async {
     Battery battery = Battery();
-    BatteryInfoPlugin batteryInfo = BatteryInfoPlugin();
-    int batteryLevel = 100;
-    final currentSelectedPackage = ref.watch(batteryInfoPackageProvider);
-
-    if (currentSelectedPackage == BatteryInfoPackage.batteryPlus) {
+    int batteryLevel = await battery.batteryLevel;
+    final batteryState = await battery.batteryState;
+    // final currentSelectedPackage = ref.watch(batteryInfoPackageProvider);
+    debugPrint("Battery state: $batteryState");
+    debugPrint("battery level: $batteryLevel");
       tasks['lowBatteryMonitor']?.subscription = battery.onBatteryStateChanged.listen((BatteryState state) async {
         batteryLevel = await battery.batteryLevel;
         debugPrint('Battery level: $batteryLevel%');
+        debugPrint('Battery state: ${state.name}');
         ref.read(batteryStateProvider.notifier).state = state.name;
         ref.read(batteryLevelProvider.notifier).state = batteryLevel;
       });
-    }
-    if (currentSelectedPackage == BatteryInfoPackage.batteryInfo) {
-      tasks['lowBatteryMonitor']?.subscription =
-          batteryInfo.iosBatteryInfoStream.listen((IosBatteryInfo? iosBatteryInfo) {
-        batteryLevel = iosBatteryInfo?.batteryLevel ?? 0;
-        debugPrint('Battery level: $batteryLevel%');
-        ref.read(batteryStateProvider.notifier).state = iosBatteryInfo?.chargingStatus?.name ?? 'Unknown';
-        ref.read(batteryLevelProvider.notifier).state = batteryLevel;
-      });
-    }
+    // if (currentSelectedPackage == BatteryInfoPackage.batteryInfo) {
+    //   tasks['lowBatteryMonitor']?.subscription =
+    //       batteryInfo.iosBatteryInfoStream.listen((IosBatteryInfo? iosBatteryInfo) {
+    //     batteryLevel = iosBatteryInfo?.batteryLevel ?? 0;
+    //     debugPrint('Battery level: $batteryLevel%');
+    //     ref.read(batteryStateProvider.notifier).state = iosBatteryInfo?.chargingStatus?.name ?? 'Unknown';
+    //     ref.read(batteryLevelProvider.notifier).state = batteryLevel;
+    //   });
+    // }
   }
 }
