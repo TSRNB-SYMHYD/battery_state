@@ -134,8 +134,10 @@ class TaskManager with WidgetsBindingObserver {
             return;
           }
       final batteryLevel = iosBatteryInfo.batteryLevel ?? 0;
+      final batteryState = iosBatteryInfo.chargingStatus?.name ?? 'Unknown';
       debugPrint('Battery level: $batteryLevel%');
-      ref.read(batteryStateProvider.notifier).state = iosBatteryInfo.chargingStatus?.name ?? 'Unknown';
+      debugPrint('Charging status: $batteryState');
+      ref.read(batteryStateProvider.notifier).state = batteryState;
       ref.read(batteryLevelProvider.notifier).state = batteryLevel;
     }, onError: (error) {
       debugPrint('Error: $error');
