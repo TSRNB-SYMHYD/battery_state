@@ -124,23 +124,16 @@ class TaskManager with WidgetsBindingObserver {
     });
   }
 
-  _lowBatteryMonitor() async {
-    BatteryInfoPlugin batteryInfo = BatteryInfoPlugin();
+  _lowBatteryMonitor() {
 
-    tasks['lowBatteryMonitor']?.subscription =
-        batteryInfo.iosBatteryInfoStream.listen((IosBatteryInfo? iosBatteryInfo) {
-          if(iosBatteryInfo == null){
-            debugPrint('Error: iosBatteryInfo is null');
-            return;
-          }
-      final batteryLevel = iosBatteryInfo.batteryLevel ?? 0;
-      final batteryState = iosBatteryInfo.chargingStatus?.name ?? 'Unknown';
+    tasks['lowBatteryMonitor']?.subscription = Future.delayed(const Duration(seconds: 1)).asStream().listen((_) async {
+     final iosBatteryInfo = await BatteryInfoPlugin().iosBatteryInfo;
+      final batteryState = iosBatteryInfo?.chargingStatus?.name ?? "Unknown";
+      final batteryLevel = iosBatteryInfo?.batteryLevel ?? 0;
       debugPrint('Battery level: $batteryLevel%');
       debugPrint('Charging status: $batteryState');
       ref.read(batteryStateProvider.notifier).state = batteryState;
       ref.read(batteryLevelProvider.notifier).state = batteryLevel;
-    }, onError: (error) {
-      debugPrint('Error: $error');
-    }, );
+    });
   }
 }
