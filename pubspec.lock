@@ -25,6 +25,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+  battery_percentage:
+    dependency: "direct main"
+    description:
+      name: battery_percentage
+      sha256: a41b96d4ec63b06df201d9cc5f2a9ace77790e4448178cc3fb3d627e72d97081
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   battery_plus:
     dependency: "direct main"
     description:

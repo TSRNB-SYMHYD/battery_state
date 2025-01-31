@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:battery_percentage/battery_level.dart';
 import 'package:battery_plus/battery_plus.dart';
 import 'package:battery_state/data/providers.dart';
 import 'package:flutter/material.dart';
@@ -124,11 +125,11 @@ class TaskManager with WidgetsBindingObserver {
   _lowBatteryMonitor() {
     tasks['lowBatteryMonitor']?.subscription = Stream.periodic(const Duration(seconds: 90)).listen((_) async {
       final batteryState = await Battery().batteryState;
-      final batteryLevel = await Battery().batteryLevel;
+      final batteryLevel = await BatteryLevel.getBatteryLevel();
       debugPrint('Battery level: $batteryLevel%');
       debugPrint('Charging status: $batteryState');
       ref.read(batteryStateProvider.notifier).state = batteryState.name;
-      ref.read(batteryLevelProvider.notifier).state = batteryLevel;
+      ref.read(batteryLevelProvider.notifier).state = int.parse(batteryLevel);
     });
   }
 }
